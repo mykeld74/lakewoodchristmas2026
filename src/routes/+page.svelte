@@ -8,7 +8,7 @@
 	import InviteTool from '#lib/components/InviteTool.svelte';
 	import QuestionsSection from '#lib/components/QuestionsSection.svelte';
 	import SiteFooter from '#lib/components/SiteFooter.svelte';
-	import { CHURCH, EVENT_DATE, SERVICES, SITE_URL, getService } from '#lib/services';
+	import { CHURCH, EVENT_DATE, SERVICES, SITE_URL, getService } from '#lib/services.js';
 
 	const invited = $derived(getService(page.url.searchParams.get('service')) ?? null);
 
@@ -23,6 +23,12 @@
 			? `${invited.name} on ${EVENT_DATE.long}, 2026 at ${invited.time}. ${CHURCH.name}, ${CHURCH.street}, ${CHURCH.city}. Free, about an hour, everyone welcome.`
 			: `Three Christmas Eve services at ${CHURCH.name} in ${CHURCH.city} on ${EVENT_DATE.long}, 2026 — 3:30 pm, 5:00 pm, and an 11:00 pm candlelight service. Free, about an hour, everyone welcome.`
 	);
+
+	const ogImage = $derived(`${SITE_URL}/og-image${invited ? `-${invited.id}` : ''}.png`);
+
+	// Split so the literal closing tag never appears in source (it would end this script block).
+	const ldOpen = '<script type="application/ld+json">';
+	const ldClose = '<' + '/script>';
 
 	const jsonLd = $derived(
 		JSON.stringify(
@@ -56,7 +62,8 @@
 					url: SITE_URL
 				}
 			}))
-		)
+			// Escaping "<" makes it impossible for the JSON to close the <script> element.
+		).replace(/</g, '\\u003c')
 	);
 </script>
 
@@ -72,12 +79,18 @@
 	<meta property="og:description" content={description} />
 	<meta property="og:url" content={SITE_URL} />
 	<meta property="og:locale" content="en_US" />
+	<meta property="og:image" content={ogImage} />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content={title} />
 
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={title} />
 	<meta name="twitter:description" content={description} />
+	<meta name="twitter:image" content={ogImage} />
 
-	{@html `<script type="application/ld+json">${jsonLd}<\/script>`}
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -- static, "<"-escaped JSON-LD built from our own data -->
+	{@html ldOpen + jsonLd + ldClose}
 </svelte:head>
 
 <SiteHeader />

@@ -34,8 +34,11 @@ export default defineConfig(
 		}
 	},
 	{
-		// Override or add rule settings here, such as:
-		// 'svelte/button-has-type': 'error'
-		rules: {}
+		rules: {
+			// This is a single page: every dynamic href is an external protocol link
+			// (sms:, mailto:, social share, Google Calendar), and internal navigation is
+			// hash anchors only. Neither case is something resolve() applies to.
+			'svelte/no-navigation-without-resolve': ['error', { ignoreLinks: true }]
+		}
 	}
 );

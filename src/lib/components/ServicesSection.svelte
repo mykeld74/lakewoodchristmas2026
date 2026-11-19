@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { SERVICES, EVENT_DATE, calendarUrl, type Service } from '#lib/services';
+	import { SERVICES, EVENT_DATE, calendarUrl, type Service } from '#lib/services.js';
 
 	let { invited = null }: { invited?: Service | null } = $props();
 </script>
@@ -10,8 +10,8 @@
 			<p class="eyebrow">Three services</p>
 			<h2>Pick the hour that fits your night.</h2>
 			<p class="lede">
-				The 3:30 and 5:00 services are the same — carols, the Christmas story, and a short
-				message. The 11:00 is quieter, and ends by candlelight. Come to whichever one suits you.
+				The 3:30 and 5:00 services are the same — carols and worship, with a short message. The
+				11:00 is quieter, and ends by candlelight. Come to whichever one suits you.
 			</p>
 		</header>
 
@@ -41,7 +41,17 @@
 					</p>
 
 					<a class="cal" href={calendarUrl(service)} target="_blank" rel="noopener noreferrer">
-						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<svg
+							width="16"
+							height="16"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.7"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+						>
 							<rect x="3.5" y="5" width="17" height="15.5" rx="2" />
 							<path d="M3.5 9.5h17M8 3.5V6m8-2.5V6" />
 						</svg>
@@ -97,7 +107,9 @@
 	}
 
 	.service.is-invited {
-		box-shadow: var(--shadow-md), 0 0 0 2px var(--accent);
+		box-shadow:
+			var(--shadow-md),
+			0 0 0 2px var(--accent);
 	}
 
 	.invited-flag {

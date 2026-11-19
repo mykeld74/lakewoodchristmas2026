@@ -7,3 +7,6 @@ bun.lockb
 
 # Miscellaneous
 /static/
+
+# Vendored reference docs (contain diff markers prettier cannot parse)
+/.cursor/

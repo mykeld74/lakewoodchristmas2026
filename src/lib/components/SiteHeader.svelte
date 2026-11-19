@@ -16,14 +16,7 @@
 <header class="site-header">
 	<div class="container bar">
 		<a class="wordmark" href="#top" onclick={close}>
-			<svg
-				class="mark"
-				width="26"
-				height="26"
-				viewBox="0 0 24 24"
-				fill="none"
-				aria-hidden="true"
-			>
+			<svg class="mark" width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
 				<path
 					d="M12 3.5c1.9 2.2 2.9 4 2.9 5.6a2.9 2.9 0 0 1-5.8 0C9.1 7.5 10.1 5.7 12 3.5Z"
 					fill="var(--gold)"
@@ -56,7 +49,16 @@
 			onclick={() => (open = !open)}
 		>
 			<span class="visually-hidden">{open ? 'Close menu' : 'Open menu'}</span>
-			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+			<svg
+				width="24"
+				height="24"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.8"
+				stroke-linecap="round"
+				aria-hidden="true"
+			>
 				{#if open}
 					<path d="M6 6l12 12M18 6L6 18" />
 				{:else}

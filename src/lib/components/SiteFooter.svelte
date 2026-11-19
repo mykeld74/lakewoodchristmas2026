@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CHURCH, EVENT_DATE, SERVICES } from '#lib/services';
+	import { CHURCH, EVENT_DATE, SERVICES } from '#lib/services.js';
 
 	const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CHURCH.mapsQuery)}`;
 </script>
@@ -23,11 +23,19 @@
 		<div class="col">
 			<p class="label">Where</p>
 			<p class="addr">
-				{CHURCH.name}<br />
+				<a class="church" href={CHURCH.website} target="_blank" rel="noopener noreferrer">
+					{CHURCH.name}
+				</a><br />
 				{CHURCH.street}<br />
-				{CHURCH.city}, {CHURCH.state} {CHURCH.zip}
+				{CHURCH.city}, {CHURCH.state}
+				{CHURCH.zip}
 			</p>
-			<a class="link" href={mapsHref} target="_blank" rel="noopener noreferrer">Open in Maps</a>
+			<div class="links">
+				<a class="link" href={mapsHref} target="_blank" rel="noopener noreferrer">Open in Maps</a>
+				<a class="link" href={CHURCH.website} target="_blank" rel="noopener noreferrer">
+					{CHURCH.websiteLabel}
+				</a>
+			</div>
 		</div>
 	</div>
 
@@ -99,10 +107,26 @@
 		line-height: 1.6;
 	}
 
+	.links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem 1.25rem;
+		margin-top: 0.7rem;
+	}
+
 	.link {
 		display: inline-block;
-		margin-top: 0.6rem;
 		border-bottom: 1px solid #ffffff4d;
+	}
+
+	.church {
+		color: var(--cream);
+		font-weight: 600;
+		border-bottom: 1px solid #ffffff40;
+	}
+
+	.church:hover {
+		border-bottom-color: var(--gold);
 	}
 
 	.bottom {

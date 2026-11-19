@@ -6,26 +6,25 @@
 		prettyUrl,
 		getService,
 		type ServiceId
-	} from '#lib/services';
+	} from '#lib/services.js';
 
 	let { initial = null }: { initial?: ServiceId | null } = $props();
 
 	// A writable $derived: it follows the `?service=` prop, and the picker can overwrite it.
 	let selected: ServiceId | 'any' = $derived(initial ?? 'any');
 	let status = $state('');
-	/** The URL that was last copied; the badge shows while it still matches the current link. */
-	let copiedUrl = $state('');
+	/** Which button was used and for which link, so the badge clears when the service changes. */
+	let copied = $state<{ kind: 'invite' | 'link'; url: string } | null>(null);
 
 	const serviceId = $derived(selected === 'any' ? null : selected);
 	const linkUrl = $derived(inviteUrl(serviceId, 'link'));
-	const copied = $derived(copiedUrl !== '' && copiedUrl === linkUrl);
+	const copiedInvite = $derived(copied?.kind === 'invite' && copied.url === linkUrl);
+	const copiedLink = $derived(copied?.kind === 'link' && copied.url === linkUrl);
 	const service = $derived(getService(serviceId) ?? null);
 	const display = $derived(prettyUrl(serviceId));
 	const messages = $derived(inviteMessages(service, 'link'));
 
-	const smsHref = $derived(
-		`sms:?&body=${encodeURIComponent(inviteMessages(service, 'text').sms)}`
-	);
+	const smsHref = $derived(`sms:?&body=${encodeURIComponent(inviteMessages(service, 'text').sms)}`);
 	const mailHref = $derived.by(() => {
 		const m = inviteMessages(service, 'email');
 		return `mailto:?subject=${encodeURIComponent(m.emailSubject)}&body=${encodeURIComponent(m.emailBody)}`;
@@ -39,22 +38,25 @@
 	});
 
 	const options = [
-		{ value: 'any' as const, label: 'Let them choose', note: 'All three times' },
+		{ value: 'any' as const, label: 'Any service', note: 'All three times' },
 		...SERVICES.map((s) => ({
 			value: s.id,
 			label: s.time,
-			note: s.id === '1100' ? 'Candlelight' : s.name.replace(' Service', '')
+			note: s.name.replace(' Service', '')
 		}))
 	];
 
-	async function copyLink() {
+	async function copy(kind: 'invite' | 'link') {
 		const url = linkUrl;
 		try {
-			await navigator.clipboard.writeText(url);
-			copiedUrl = url;
-			status = 'Link copied to your clipboard.';
+			await navigator.clipboard.writeText(kind === 'invite' ? messages.copy : url);
+			copied = { kind, url };
+			status =
+				kind === 'invite'
+					? 'Invitation copied to your clipboard.'
+					: 'Link copied to your clipboard.';
 			setTimeout(() => {
-				if (copiedUrl === url) copiedUrl = '';
+				if (copied?.kind === kind && copied.url === url) copied = null;
 			}, 2400);
 		} catch {
 			status = `Couldn't copy automatically — the link is ${url}`;
@@ -65,7 +67,7 @@
 <section class="section invite" id="invite">
 	<div class="container">
 		<div class="layout">
-			<div class="copy">
+			<div class="intro">
 				<p class="eyebrow">Invite someone</p>
 				<h2>Most people come because a friend asked them.</h2>
 				<p class="lede">
@@ -78,97 +80,192 @@
 					<div class="options">
 						{#each options as option (option.value)}
 							<label class={['option', { 'is-on': selected === option.value }]}>
-								<input
-									type="radio"
-									name="service"
-									value={option.value}
-									bind:group={selected}
-								/>
+								<input type="radio" name="service" value={option.value} bind:group={selected} />
 								<span class="label">{option.label}</span>
 								<span class="note">{option.note}</span>
 							</label>
 						{/each}
 					</div>
 				</fieldset>
-
-				<div class="share">
-					<div class="link-row">
-						<span class="link-text" title={linkUrl}>{display}</span>
-						<button type="button" class="btn copy" onclick={copyLink}>
-							{#if copied}
-								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-									<path d="m5 12.5 4.5 4.5L19 7.5" />
-								</svg>
-								Copied
-							{:else}
-								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-									<path d="M9.5 9.5h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1Z" />
-									<path d="M15.5 6.5v-2a1 1 0 0 0-1-1h-9a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h2" />
-								</svg>
-								Copy link
-							{/if}
-						</button>
-					</div>
-
-					<p class="visually-hidden" role="status">{status}</p>
-
-					<div class="btn-row">
-						<a class="btn btn-outline" href={smsHref}>
-							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-								<path d="M21 15.5a2 2 0 0 1-2 2H8l-4 3.5v-15a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z" />
-								<path d="M8.5 9.5h7M8.5 13h4.5" />
-							</svg>
-							Text it
-						</a>
-
-						<a class="btn btn-outline" href={mailHref}>
-							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-								<rect x="3" y="5" width="18" height="14" rx="2" />
-								<path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
-							</svg>
-							Email it
-						</a>
-
-						<a class="btn btn-outline" href={fbHref} target="_blank" rel="noopener noreferrer">
-							<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-								<path d="M14 8.5V7c0-.7.3-1 1-1h1.5V3.5H14c-2.2 0-3.5 1.3-3.5 3.4v1.6H8.5V11h2v9.5H14V11h2.2l.4-2.5H14Z" />
-							</svg>
-							Facebook
-						</a>
-
-						<a class="btn btn-outline" href={xHref} target="_blank" rel="noopener noreferrer">
-							<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-								<path d="M17.5 3h2.9l-6.4 7.3L21.6 21h-5.9l-4.6-6-5.3 6H2.9l6.8-7.8L2.6 3h6l4.2 5.5L17.5 3Zm-1 16.2h1.6L8.1 4.7H6.3l10.2 14.5Z" />
-							</svg>
-							X
-						</a>
-					</div>
-
-					<p class="fine">
-						{#if service}
-							Your link opens the page with the <strong>{service.time}</strong> service highlighted,
-							so they land on exactly the one you meant.
-						{:else}
-							Your link opens the page with all three times laid out, so they can pick whichever
-							one fits their night.
-						{/if}
-					</p>
-				</div>
 			</div>
 
 			<aside class="preview" aria-label="Preview of your message">
+				<p class="preview-label">What “Copy invite” gives you</p>
 				<div class="phone">
 					<p class="bubble them">{messages.preview[0]}</p>
-					<p class="bubble them">{messages.preview[1]}</p>
+					<p class="bubble them">
+						{messages.preview[1]}
+						<span class="bubble-link">{display}</span>
+					</p>
 					<p class="bubble me">honestly… yeah, why not</p>
 				</div>
 				<p class="caption">
-					<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<svg
+						width="15"
+						height="15"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.7"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
 						<path d="M12 20s-7-4.5-7-9.5A3.5 3.5 0 0 1 12 8a3.5 3.5 0 0 1 7 2.5c0 5-7 9.5-7 9.5Z" />
 					</svg>
 					That's the whole thing. No pitch required.
 				</p>
 			</aside>
+
+			<div class="share">
+				<div class="btn-row copy-row">
+					<button type="button" class="btn" onclick={() => copy('invite')}>
+						{#if copiedInvite}
+							<svg
+								width="18"
+								height="18"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.8"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<path d="m5 12.5 4.5 4.5L19 7.5" />
+							</svg>
+							Copied
+						{:else}
+							<svg
+								width="18"
+								height="18"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.6"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<path d="M21 15.5a2 2 0 0 1-2 2H8l-4 3.5v-15a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z" />
+								<path d="M8.5 9.5h7M8.5 13h4.5" />
+							</svg>
+							Copy invite
+						{/if}
+					</button>
+
+					<button type="button" class="btn btn-outline" onclick={() => copy('link')}>
+						{#if copiedLink}
+							<svg
+								width="18"
+								height="18"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.8"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<path d="m5 12.5 4.5 4.5L19 7.5" />
+							</svg>
+							Copied
+						{:else}
+							<svg
+								width="18"
+								height="18"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.6"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<path d="M10.5 13.5a3.5 3.5 0 0 0 5 0l3-3a3.5 3.5 0 0 0-5-5l-1.5 1.5" />
+								<path d="M13.5 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.5 3.5 0 0 0 5 5l1.5-1.5" />
+							</svg>
+							Copy link only
+						{/if}
+					</button>
+				</div>
+
+				<p class="link-line">
+					<span class="link-label">Your link</span>
+					<span class="link-text" title={linkUrl}>{display}</span>
+				</p>
+
+				<p class="visually-hidden" role="status">{status}</p>
+
+				<div class="btn-row">
+					<a class="btn btn-outline" href={smsHref}>
+						<svg
+							width="18"
+							height="18"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.6"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+						>
+							<path d="M21 15.5a2 2 0 0 1-2 2H8l-4 3.5v-15a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z" />
+							<path d="M8.5 9.5h7M8.5 13h4.5" />
+						</svg>
+						Text it
+					</a>
+
+					<a class="btn btn-outline" href={mailHref}>
+						<svg
+							width="18"
+							height="18"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.6"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+						>
+							<rect x="3" y="5" width="18" height="14" rx="2" />
+							<path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
+						</svg>
+						Email it
+					</a>
+
+					<a class="btn btn-outline" href={fbHref} target="_blank" rel="noopener noreferrer">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+							<path
+								d="M14 8.5V7c0-.7.3-1 1-1h1.5V3.5H14c-2.2 0-3.5 1.3-3.5 3.4v1.6H8.5V11h2v9.5H14V11h2.2l.4-2.5H14Z"
+							/>
+						</svg>
+						Facebook
+					</a>
+
+					<a class="btn btn-outline" href={xHref} target="_blank" rel="noopener noreferrer">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+							<path
+								d="M17.5 3h2.9l-6.4 7.3L21.6 21h-5.9l-4.6-6-5.3 6H2.9l6.8-7.8L2.6 3h6l4.2 5.5L17.5 3Zm-1 16.2h1.6L8.1 4.7H6.3l10.2 14.5Z"
+							/>
+						</svg>
+						X
+					</a>
+				</div>
+
+				<p class="fine">
+					<strong>Copy invite</strong> gives you the message and the link together.
+					<strong>Copy link only</strong> gives you just the link, if you would rather write your
+					own — or select it above and copy it by hand.
+					{#if service}
+						Either way it opens the page with the <strong>{service.time}</strong> service highlighted,
+						so they land on exactly the one you meant.
+					{:else}
+						Either way it opens the page with all three times laid out, so they can pick whichever
+						one fits their night.
+					{/if}
+				</p>
+			</div>
 		</div>
 	</div>
 </section>
@@ -180,15 +277,22 @@
 
 	.layout {
 		display: grid;
-		gap: clamp(2.5rem, 5vw, 4rem);
-		align-items: center;
+		gap: clamp(1.75rem, 4vw, 2.5rem);
+		/* On a phone the message has to come before the buttons, so you see what
+		   you are about to copy. On a wide screen it sits alongside both. */
+		grid-template-areas:
+			'intro'
+			'preview'
+			'share';
 	}
 
-	.copy {
+	.intro {
+		grid-area: intro;
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
 		gap: 1rem;
+		min-width: 0;
 	}
 
 	/* Service picker */
@@ -211,7 +315,8 @@
 
 	.options {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(8.25rem, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+		align-items: stretch;
 		gap: 0.6rem;
 	}
 
@@ -271,40 +376,54 @@
 
 	/* Share controls */
 	.share {
+		grid-area: share;
 		display: flex;
 		flex-direction: column;
 		gap: 0.9rem;
 		width: 100%;
+		min-width: 0;
 		margin-top: 0.6rem;
 	}
 
-	.link-row {
+	.copy-row {
+		margin-bottom: 0.1rem;
+	}
+
+	.link-line {
 		display: flex;
 		align-items: center;
-		gap: 0.6rem;
+		flex-wrap: wrap;
+		gap: 0.3rem 0.7rem;
+		width: 100%;
+		max-width: min(28rem, 100%);
 		min-width: 0;
-		max-width: 28rem;
-		padding: 0.45rem 0.45rem 0.45rem 1.1rem;
+		padding: 0.55rem 1.1rem;
 		background: var(--paper);
-		border: 1.5px solid var(--line-strong);
+		border: 1px solid var(--line);
 		border-radius: var(--radius-pill);
-		box-shadow: var(--shadow-sm);
+		font-size: 0.9rem;
+	}
+
+	.link-label {
+		flex: none;
+		font-size: 0.6875rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--ink-faint);
 	}
 
 	.link-text {
-		flex: 1;
 		min-width: 0;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		font-size: 0.9375rem;
 		color: var(--ink-soft);
+		overflow-wrap: anywhere;
+		/* one click selects the whole URL */
+		user-select: all;
+		-webkit-user-select: all;
 	}
 
-	.copy {
-		flex: none;
-		padding: 0.55rem 1.1rem;
-		font-size: 0.9375rem;
+	.copy-row .btn {
+		padding: 0.8rem 1.5rem;
 	}
 
 	.btn-row .btn {
@@ -325,9 +444,27 @@
 
 	/* Message preview */
 	.preview {
+		grid-area: preview;
 		display: flex;
 		flex-direction: column;
-		gap: 0.9rem;
+		gap: 0.7rem;
+		min-width: 0;
+	}
+
+	.preview-label {
+		font-size: 0.6875rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--ink-faint);
+	}
+
+	.bubble-link {
+		display: block;
+		margin-top: 0.4rem;
+		color: var(--spruce);
+		font-weight: 500;
+		overflow-wrap: anywhere;
 	}
 
 	.phone {
@@ -379,6 +516,15 @@
 	@media (min-width: 58rem) {
 		.layout {
 			grid-template-columns: 1.1fr 0.9fr;
+			grid-template-areas:
+				'intro preview'
+				'share preview';
+			column-gap: clamp(2.5rem, 5vw, 4rem);
+			align-items: start;
+		}
+
+		.preview {
+			align-self: center;
 		}
 	}
 </style>

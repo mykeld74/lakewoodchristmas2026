@@ -1,4 +1,9 @@
-export const SITE_URL = 'https://westwoodschristmas.org';
+// NOTE: details confirmed against westwoodscc.org — address, casual dress, north/south
+// entrances with greeters, worship + Bible teaching, "belong before you believe".
+// STILL TO CONFIRM with the church: that 3:30 and 5:00 are identical services, the
+// ~1 hour runtime on Christmas Eve (Sundays run 60-75 min), and whether kids' classes
+// run on Christmas Eve or kids stay in the service.
+export const SITE_URL = 'https://lakewoodchristmas.org';
 
 export const CHURCH = {
 	name: 'Westwoods Community Church',
@@ -6,6 +11,8 @@ export const CHURCH = {
 	city: 'Lakewood',
 	state: 'CO',
 	zip: '80227',
+	website: 'https://westwoodscc.org',
+	websiteLabel: 'westwoodscc.org',
 	get address() {
 		return `${this.street}, ${this.city}, ${this.state} ${this.zip}`;
 	},
@@ -39,11 +46,11 @@ export const SERVICES: Service[] = [
 		time: '3:30 pm',
 		timeShort: '3:30',
 		iso: '2026-12-24T15:30:00-07:00',
-		name: 'Early Family Service',
-		tag: 'Easiest with little ones',
+		name: 'Daylight Service',
+		tag: 'While it is still light out',
 		blurb:
-			'Carols, the Christmas story, and a short message. The same service as 5:00, in our quietest hour — the easiest one to slip into if you have small kids or dinner waiting afterward.',
-		bestFor: 'Families with young children, anyone with evening plans',
+			'Carols and worship, with a short message. The same service as 5:00, while there is still daylight outside — a good fit if you have somewhere to be later, or would rather not be out late.',
+		bestFor: 'An early start, with the evening still ahead of you',
 		tone: 'day'
 	},
 	{
@@ -51,11 +58,11 @@ export const SERVICES: Service[] = [
 		time: '5:00 pm',
 		timeShort: '5:00',
 		iso: '2026-12-24T17:00:00-07:00',
-		name: 'Family Service',
-		tag: 'Our fullest hour',
+		name: 'Twilight Service',
+		tag: 'Just after sunset',
 		blurb:
-			'The same service as 3:30, with the room at its fullest and the singing at its loudest. If you want Christmas Eve to feel like Christmas Eve, this is the one.',
-		bestFor: 'Anyone who wants the full room and the big carols',
+			'The same service as 3:30, once the light has gone. Carols and worship, with a short message, and still time for whatever the rest of your night holds.',
+		bestFor: 'The middle of the evening, with the night still ahead',
 		tone: 'evening'
 	},
 	{
@@ -66,8 +73,8 @@ export const SERVICES: Service[] = [
 		name: 'Candlelight Service',
 		tag: 'Quiet, by candlelight',
 		blurb:
-			'Slower and more reflective. The lights go down, candlelight passes hand to hand across the room, and we sing Silent Night together as Christmas Day arrives.',
-		bestFor: 'Adults and older kids, anyone who loves a still night',
+			'Slower and more reflective. The lights go down, candlelight passes hand to hand across the room, and we sing the night out together as Christmas Day arrives.',
+		bestFor: 'A still, late night — better for older kids and adults',
 		tone: 'night'
 	}
 ];
@@ -96,18 +103,21 @@ interface Messages {
 	social: string;
 	/** Short preview lines shown in the phone mock-up. */
 	preview: [string, string];
+	/** Message plus link for the copy button — the same words the mock-up shows. */
+	copy: string;
 }
 
 export function inviteMessages(service: Service | null, source: string): Messages {
 	const link = inviteUrl(service?.id ?? null, source);
-	const when = service
-		? `${EVENT_DATE.weekday} at ${service.time}`
-		: `${EVENT_DATE.weekday}`;
-	const timesList = SERVICES.map((s) => s.time).join(', ').replace(/, ([^,]*)$/, ' or $1');
+	const timesList = SERVICES.map((s) => s.time)
+		.join(', ')
+		.replace(/, ([^,]*)$/, ' or $1');
 
 	const sms = service
-		? `Hey! Any plans Christmas Eve? Westwoods is doing a ${service.id === '1100' ? 'candlelight service' : 'Christmas Eve service'} at ${service.time} — carols, the Christmas story, about an hour. It's free and super casual. Want to come with me? ${link}`
-		: `Hey! Any plans Christmas Eve? Westwoods has three Christmas Eve services — ${timesList}. Carols, the Christmas story, about an hour. Free and super casual. Want to come with me? ${link}`;
+		? service.id === '1100'
+			? `Hey! Any plans Christmas Eve? Westwoods does an 11:00 pm candlelight service — carols and worship, and the whole room singing by candlelight right before midnight. About an hour, free, super casual. Want to come with me? ${link}`
+			: `Hey! Any plans Christmas Eve? Westwoods is doing a Christmas Eve service at ${service.time} — carols and worship, about an hour. It's free and super casual. Want to come with me? ${link}`
+		: `Hey! Any plans Christmas Eve? Westwoods has three Christmas Eve services — ${timesList}. Carols and worship, about an hour. Free and super casual. Want to come with me? ${link}`;
 
 	const emailSubject = service
 		? `Come with me to Christmas Eve — ${service.time}`
@@ -147,19 +157,27 @@ All the details are here: ${link}
 		? [
 				`Hey — doing anything Christmas Eve? Westwoods has a service at ${service.time}.`,
 				service.id === '1100'
-					? `They do the whole candlelight thing and finish with Silent Night right before midnight. About an hour. Want to come with me?`
-					: `Carols, the Christmas story, about an hour. Free and really casual. Want to come with me?`
+					? `They do the whole candlelight thing right before midnight. About an hour. Want to come with me?`
+					: `Carols and worship, about an hour. Free and really casual. Want to come with me?`
 			]
 		: [
 				`Hey — doing anything Christmas Eve? Westwoods has services at ${timesList}.`,
-				`Carols, the Christmas story, about an hour. Free and really casual. Pick a time and come with me?`
+				`Carols and worship, about an hour. Free and really casual. Pick a time and come with me?`
 			];
 
-	return { sms, emailSubject, emailBody, social, preview };
+	// Copying gives you the whole invitation, not a bare URL — so it can be pasted
+	// into a text, an email or a group chat without having to write anything.
+	const copy = `${preview[0]} ${preview[1]}\n\n${link}`;
+
+	return { sms, emailSubject, emailBody, social, preview, copy };
 }
 
 export function calendarUrl(service: Service): string {
-	const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+	const fmt = (d: Date) =>
+		d
+			.toISOString()
+			.replace(/[-:]/g, '')
+			.replace(/\.\d{3}/, '');
 	const start = new Date(service.iso);
 	const end = new Date(start.getTime() + 60 * 60 * 1000);
 	const params = new URLSearchParams({

@@ -11,14 +11,14 @@
 		<div class="body">
 			<p>
 				Maybe Christmas Eve at church is a tradition you have kept your whole life. Maybe it is
-				something you did as a kid and have not done since. Maybe you have never been, and the
-				idea makes you a little curious and a little wary at the same time.
+				something you did as a kid and have not done since. Maybe you have never been, and the idea
+				makes you a little curious and a little wary at the same time.
 			</p>
 			<p>
-				All of that is welcome here. You can walk in, sit down, and take it in without anyone
-				asking anything of you. No sign-in sheet, no being singled out, no one working the room.
-				Just carols, a story that is older than all of us, and an hour with your neighbors on the
-				longest, brightest night of the year.
+				All of that is welcome here. You can walk in, sit down, and take it in without anyone asking
+				anything of you. No sign-in sheet, no being singled out, no one working the room. Just
+				carols, worship, and an hour with your neighbors on the longest, brightest night of the
+				year.
 			</p>
 			<p class="closer">Come as you are. Sit where you like. Leave when it's over.</p>
 		</div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CHURCH, EVENT_DATE, SERVICES, type Service } from '#lib/services';
+	import { CHURCH, EVENT_DATE, SERVICES, type Service } from '#lib/services.js';
 
 	let { invited = null }: { invited?: Service | null } = $props();
 </script>
@@ -9,12 +9,25 @@
 		<div class="copy">
 			{#if invited}
 				<p class="invited-banner">
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<svg
+						width="16"
+						height="16"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.8"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
 						<path d="M4 6.5h16v12H4z" />
 						<path d="m4 7 8 6 8-6" />
 					</svg>
-					You were invited to the <strong>{invited.time}</strong>
-					{invited.id === '1100' ? 'candlelight service' : 'service'}. Here is everything you'd want to know.
+					<span>
+						You were invited to the <strong>{invited.time}</strong>
+						{invited.id === '1100' ? 'candlelight service' : 'service'}. Here is everything you'd
+						want to know.
+					</span>
 				</p>
 			{/if}
 
@@ -28,8 +41,8 @@
 			<p class="tagline">Three services. One story. Everyone welcome.</p>
 
 			<p class="lede">
-				Carols you already know, the Christmas story told plainly, and about an hour together
-				before the rest of the night begins.
+				Carols and worship, a short message, and about an hour together before the rest of the night
+				begins.
 			</p>
 
 			<dl class="facts">
@@ -53,7 +66,7 @@
 			<div class="night">
 				<svg class="stars" viewBox="0 0 400 520" preserveAspectRatio="xMidYMid slice">
 					<defs>
-						<radialGradient id="glow" cx="50%" cy="62%" r="52%">
+						<radialGradient id="glow" cx="50%" cy="40%" r="50%">
 							<stop offset="0%" stop-color="var(--gold-glow)" stop-opacity="0.5" />
 							<stop offset="55%" stop-color="var(--gold)" stop-opacity="0.12" />
 							<stop offset="100%" stop-color="var(--gold)" stop-opacity="0" />
@@ -63,15 +76,22 @@
 					{#each [[38, 54, 1.5], [96, 28, 1], [150, 70, 1.2], [214, 40, 1], [286, 76, 1.6], [344, 36, 1.1], [62, 128, 1], [122, 162, 1.3], [258, 142, 1], [330, 120, 1.4], [24, 206, 1.2], [372, 196, 1], [88, 250, 1], [318, 268, 1.2], [46, 330, 1.1], [360, 352, 1.3], [140, 404, 1], [268, 430, 1.2], [70, 452, 1], [206, 476, 1.1]] as [cx, cy, r] (cx + '-' + cy)}
 						<circle {cx} {cy} {r} fill="var(--gold-glow)" opacity="0.75" />
 					{/each}
-					<g transform="translate(200 300)">
-						<path d="M0-34C7-20 11-12 11-5a11 11 0 0 1-22 0c0-7 4-15 11-29Z" fill="var(--gold)" opacity="0.95" />
+					<g transform="translate(200 212) scale(1.75)">
+						<path
+							d="M0-34C7-20 11-12 11-5a11 11 0 0 1-22 0c0-7 4-15 11-29Z"
+							fill="var(--gold)"
+							opacity="0.95"
+						/>
 						<path d="M0-18c4 7 6 11 6 15a6 6 0 0 1-12 0c0-4 2-8 6-15Z" fill="var(--gold-glow)" />
 					</g>
 				</svg>
 
 				<div class="times">
 					{#each SERVICES as service (service.id)}
-						<a class={['time-chip', { 'is-invited': invited?.id === service.id }]} href="#service-{service.id}">
+						<a
+							class={['time-chip', { 'is-invited': invited?.id === service.id }]}
+							href="#service-{service.id}"
+						>
 							<span class="t">{service.time}</span>
 							<span class="n">{service.name}</span>
 						</a>
@@ -106,6 +126,7 @@
 		flex-direction: column;
 		align-items: flex-start;
 		gap: 1.1rem;
+		min-width: 0;
 	}
 
 	.invited-banner {
@@ -194,6 +215,7 @@
 
 	.art {
 		justify-self: stretch;
+		min-width: 0;
 	}
 
 	.night {
@@ -233,7 +255,9 @@
 		background: #ffffff0f;
 		color: var(--cream);
 		text-decoration: none;
-		transition: background-color 0.16s, border-color 0.16s;
+		transition:
+			background-color 0.16s,
+			border-color 0.16s;
 	}
 
 	.time-chip:hover {

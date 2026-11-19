@@ -1,24 +1,24 @@
 <script lang="ts">
-	import { CHURCH } from '#lib/services';
+	import { CHURCH } from '#lib/services.js';
 
 	const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CHURCH.mapsQuery)}`;
 
 	const details = [
 		{
 			title: 'Getting there',
-			body: `We're at ${CHURCH.street} in ${CHURCH.city}. Park in the main lot and head for the doors with the lights on — someone will be outside to point you in. Accessible parking and a drop-off spot are near the main entrance.`
+			body: `We're at ${CHURCH.street} in ${CHURCH.city}, at roughly Wadsworth and Morrison Road. Come in through the doors on either the north or south side of the building — someone will be there to greet you and point you toward the auditorium.`
 		},
 		{
 			title: 'When to arrive',
-			body: 'Ten or fifteen minutes early is plenty, and it gets you a better seat. Christmas Eve is our busiest night of the year, so the 5:00 fills up first — if you are running late, the 3:30 or the 11:00 will have more room.'
+			body: 'A few minutes early is all you need, and it gets you a better seat. Parking and getting settled take a little longer on Christmas Eve, so give yourself some margin.'
 		},
 		{
 			title: 'What happens',
-			body: 'Carols everyone knows, the Christmas story read aloud, a short message, and — at the 11:00 — candlelight passed hand to hand. About an hour, start to finish. You can sing or just listen.'
+			body: 'Carols and worship, with a short message — the same Bible teaching we do every week, shaped for Christmas Eve. At the 11:00, the lights go down and candlelight passes through the room. You can sing along or just listen.'
 		},
 		{
 			title: 'Bringing kids',
-			body: 'Kids are welcome at every service and stay with you the whole time. Wiggling and noise are expected on Christmas Eve. The 3:30 is the gentlest landing for young families; the 11:00 runs late and suits older kids and adults best.'
+			body: 'Kids are welcome at all three services, and Christmas Eve is a forgiving night for noise and wiggling. If you have little ones, the earlier services are an easier ask; the 11:00 runs late and suits older kids and adults best.'
 		}
 	];
 </script>
@@ -45,10 +45,21 @@
 				<p class="name">{CHURCH.name}</p>
 				<p class="addr">
 					{CHURCH.street}<br />
-					{CHURCH.city}, {CHURCH.state} {CHURCH.zip}
+					{CHURCH.city}, {CHURCH.state}
+					{CHURCH.zip}
 				</p>
 				<a class="btn btn-outline" href={mapsHref} target="_blank" rel="noopener noreferrer">
-					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<svg
+						width="18"
+						height="18"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.7"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
 						<path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" />
 						<circle cx="12" cy="10" r="2.6" />
 					</svg>

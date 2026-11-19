@@ -19,8 +19,12 @@
 			{#each SERVICES as service (service.id)}
 				<li
 					id="service-{service.id}"
-					class="service card tone-{service.tone}"
-					class:is-invited={invited?.id === service.id}
+					class={[
+						'service',
+						'card',
+						`tone-${service.tone}`,
+						{ 'is-invited': invited?.id === service.id }
+					]}
 				>
 					{#if invited?.id === service.id}
 						<p class="invited-flag">You were invited to this one</p>

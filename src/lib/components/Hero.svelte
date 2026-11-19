@@ -71,7 +71,7 @@
 
 				<div class="times">
 					{#each SERVICES as service (service.id)}
-						<a class="time-chip" class:is-invited={invited?.id === service.id} href="#service-{service.id}">
+						<a class={['time-chip', { 'is-invited': invited?.id === service.id }]} href="#service-{service.id}">
 							<span class="t">{service.time}</span>
 							<span class="n">{service.name}</span>
 						</a>

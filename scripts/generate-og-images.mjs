@@ -127,10 +127,15 @@ h1{font-family:'Fraunces',Georgia,serif;font-weight:600;letter-spacing:-.03em;
 }
 
 const variants = [
-	{ out: 'og-image.png', headline: 'Come be in the room', times: SERVICES, highlight: null },
+	{
+		out: 'og-image.png',
+		headline: 'Christmas Eve is better together',
+		times: SERVICES,
+		highlight: null
+	},
 	...SERVICES.map((s) => ({
 		out: `og-image-${s.id}.png`,
-		headline: s.id === '1100' ? 'Come for the candlelight' : 'Come be in the room',
+		headline: s.id === '1100' ? 'Come for the candlelight' : 'Christmas Eve is better together',
 		times: SERVICES,
 		highlight: s.id
 	}))

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Candle">
+	<defs>
+		<linearGradient id="bg" x1="0" y1="0" x2=".55" y2="1">
+			<stop offset="0%" stop-color="#15362c"/>
+			<stop offset="100%" stop-color="#0b2019"/>
+		</linearGradient>
+		<radialGradient id="glow" cx="50%" cy="32%" r="46%">
+			<stop offset="0%" stop-color="#fbe3ac" stop-opacity=".75"/>
+			<stop offset="100%" stop-color="#e0a533" stop-opacity="0"/>
+		</radialGradient>
+	</defs>
+	<rect width="64" height="64" rx="10" fill="url(#bg)"/>
+	<rect width="64" height="64" rx="10" fill="url(#glow)"/>
+	<rect x="21" y="33" width="22" height="25" rx="4" fill="#fdf7ec"/>
+	<rect x="21" y="33" width="7" height="25" rx="3.5" fill="#ffffff" opacity=".5"/>
+	<g transform="translate(32 28) scale(.62)">
+		<path d="M0-38C8-21 12-11 12-4a12 12 0 0 1-24 0c0-7 4-17 12-34Z" fill="#e0a533"/>
+		<path d="M0-20c4.6 8.4 6.6 12.4 6.6 16.4a6.6 6.6 0 0 1-13.2 0c0-4 2-8 6.6-16.4Z" fill="#fbe3ac"/>
+	</g>
+</svg>

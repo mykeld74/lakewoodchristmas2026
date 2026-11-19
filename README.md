@@ -76,6 +76,20 @@ cannot drift from the site. It needs Google Chrome at the standard macOS path an
 for native TypeScript imports — it will not run in CI as written, so regenerate locally and commit
 the PNGs.
 
+## Icons
+
+The favicon is the same candle used in the header and on the share cards. The SVG is generated
+rather than hand-kept, so the mark stays in one place:
+
+```bash
+pnpm icons
+```
+
+[`scripts/generate-icons.mjs`](scripts/generate-icons.mjs) writes `favicon.svg`, `favicon-96.png`
+for browsers that ignore SVG icons, and a square-cornered `apple-touch-icon.png` at 180×180, since
+iOS applies its own mask and would render rounded corners as black. Edit the mark in that script,
+not in `static/`. It needs Chrome and `sips`.
+
 ## Development
 
 ```bash

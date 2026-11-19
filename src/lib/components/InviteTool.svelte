@@ -46,6 +46,15 @@
 		}))
 	];
 
+	async function copyForInstagram() {
+		try {
+			await navigator.clipboard.writeText(messages.copy);
+			status = 'Invitation copied — paste it into a story, a post or a DM.';
+		} catch {
+			status = `Couldn't copy automatically — the link is ${linkUrl}`;
+		}
+	}
+
 	async function copy(kind: 'invite' | 'link') {
 		const url = linkUrl;
 		try {
@@ -251,12 +260,38 @@
 						</svg>
 						X
 					</a>
+
+					<a
+						class="btn btn-outline"
+						href="https://www.instagram.com/"
+						target="_blank"
+						rel="noopener noreferrer"
+						onclick={copyForInstagram}
+					>
+						<svg
+							width="18"
+							height="18"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.6"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+						>
+							<rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+							<circle cx="12" cy="12" r="4" />
+							<circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
+						</svg>
+						Instagram
+					</a>
 				</div>
 
 				<p class="fine">
 					<strong>Copy invite</strong> gives you the message and the link together.
 					<strong>Copy link only</strong> gives you just the link, if you would rather write your
-					own — or select it above and copy it by hand.
+					own — or select it above and copy it by hand. Instagram has no share link, so that button
+					copies your invitation and opens Instagram for you to paste it in.
 					{#if service}
 						Either way it opens the page with the <strong>{service.time}</strong> service highlighted,
 						so they land on exactly the one you meant.

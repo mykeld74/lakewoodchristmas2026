@@ -34,8 +34,8 @@
 			<p class="eyebrow">{EVENT_DATE.weekday} &middot; {EVENT_DATE.long}, 2026</p>
 
 			<h1>
-				Come be<br />
-				<span class="underlined">in the room</span>
+				Christmas Eve is<br />
+				<span class="underlined">better together</span>
 			</h1>
 
 			<p class="tagline">Three services. One story. Everyone welcome.</p>
@@ -154,6 +154,12 @@
 
 	h1 {
 		margin: 0;
+		/* Sized so each line holds together at every width rather than orphaning a word. */
+		font-size: clamp(2.35rem, 5.6vw, 4.25rem);
+		/* Creates the stacking context the underline sits inside; without it the
+		   rule's negative z-index would fall behind the hero background. */
+		position: relative;
+		z-index: 0;
 	}
 
 	.underlined {
@@ -171,6 +177,8 @@
 		border-radius: 999px;
 		background: var(--berry);
 		opacity: 0.85;
+		/* behind the glyphs, so descenders cross over the rule */
+		z-index: -1;
 	}
 
 	.tagline {
@@ -295,7 +303,7 @@
 
 	@media (min-width: 60rem) {
 		.inner {
-			grid-template-columns: 1.05fr 0.95fr;
+			grid-template-columns: 1.2fr 0.8fr;
 		}
 	}
 </style>

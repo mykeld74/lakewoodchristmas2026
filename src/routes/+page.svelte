@@ -14,14 +14,14 @@
 
 	const title = $derived(
 		invited
-			? `Christmas Eve at Westwoods — ${invited.name}, ${invited.time}`
-			: 'Christmas Eve at Westwoods — Three services, everyone welcome'
+			? `The Christmas we actually need — ${invited.name}, ${invited.timeRange}`
+			: 'The Christmas we actually need — Christmas Eve at Westwoods'
 	);
 
 	const description = $derived(
 		invited
-			? `${invited.name} on ${EVENT_DATE.long}, 2026 at ${invited.time}. ${CHURCH.name}, ${CHURCH.street}, ${CHURCH.city}. Free, about an hour, everyone welcome.`
-			: `Three Christmas Eve services at ${CHURCH.name} in ${CHURCH.city} on ${EVENT_DATE.long}, 2026 — 3:30 pm, 5:00 pm, and an 11:00 pm candlelight service. Free, about an hour, everyone welcome.`
+			? `Press into the Christmas we actually need. ${invited.name} on ${EVENT_DATE.long}, 2026, ${invited.timeRange}. ${CHURCH.name}, ${CHURCH.street}, ${CHURCH.city}. Free, about an hour, everyone welcome.`
+			: `Press into the Christmas we actually need. Christmas Eve at ${CHURCH.name} in ${CHURCH.city}, ${EVENT_DATE.long}, 2026 — Casual Relational services 3:30 – 4:30 and 5:00 – 6:00 pm, and Acoustic Christmas Eve 11:00 pm – Midnight. Free, everyone welcome.`
 	);
 
 	const ogImage = $derived(`${SITE_URL}/og-image${invited ? `-${invited.id}` : ''}.png`);

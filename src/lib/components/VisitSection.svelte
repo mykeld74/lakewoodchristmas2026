@@ -14,11 +14,11 @@
 		},
 		{
 			title: 'What happens',
-			body: 'Carols and worship, with a short message — the same Bible teaching we do every week, shaped for Christmas Eve. At the 11:00, the lights go down and candlelight passes through the room. You can sing along or just listen.'
+			body: 'The 3:30 and 5:00 are identical casual, relational services — Christmas music, kids singing, a short moment just for the kids, candlelight, and a message of hope. The 11:00 Acoustic Christmas Eve is a quieter late hour of music, a message, and communion, welcoming Christmas Day at Midnight. Sing along or just listen.'
 		},
 		{
 			title: 'Bringing kids',
-			body: 'Kids are welcome at all three services, and Christmas Eve is a forgiving night for noise and wiggling. If you have little ones, the earlier services are an easier ask; the 11:00 runs late and suits older kids and adults best.'
+			body: 'Kids are welcome at all three services, and Christmas Eve is a forgiving night for noise and wiggling — kids in the room, noise in the room is life in the room! There will be specific kid-targeted activities at the 3:30 and 5:00 services.'
 		}
 	];
 </script>

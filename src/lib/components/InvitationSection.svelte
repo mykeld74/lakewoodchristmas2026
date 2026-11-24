@@ -15,12 +15,10 @@
 				makes you a little curious and a little wary at the same time.
 			</p>
 			<p>
-				All of that is welcome here. You can walk in, sit down, and take it in without anyone asking
-				anything of you. No sign-in sheet, no being singled out, no one working the room. Just
-				carols, worship, and an hour with your neighbors on the longest, brightest night of the
-				year.
+				All of that is welcome here &mdash; there's a place for you. Come as you are, and we think
+				you will be amazed at the love and hope you'll find.
 			</p>
-			<p class="closer">Come as you are. Sit where you like. Leave when it's over.</p>
+			<p class="closer">We would love to celebrate with you.</p>
 		</div>
 	</div>
 </section>

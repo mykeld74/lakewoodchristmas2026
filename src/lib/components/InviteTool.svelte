@@ -42,7 +42,7 @@
 		...SERVICES.map((s) => ({
 			value: s.id,
 			label: s.time,
-			note: s.name.replace(' Service', '')
+			note: s.name
 		}))
 	];
 

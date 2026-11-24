@@ -24,9 +24,8 @@
 						<path d="m4 7 8 6 8-6" />
 					</svg>
 					<span>
-						You were invited to the <strong>{invited.time}</strong>
-						{invited.id === '1100' ? 'candlelight service' : 'service'}. Here is everything you'd
-						want to know.
+						You were invited to <strong>{invited.name}</strong> at
+						<strong>{invited.timeRange}</strong>. Here is everything you'd want to know.
 					</span>
 				</p>
 			{/if}
@@ -34,15 +33,19 @@
 			<p class="eyebrow">{EVENT_DATE.weekday} &middot; {EVENT_DATE.long}, 2026</p>
 
 			<h1>
-				Christmas Eve is<br />
-				<span class="underlined">better together</span>
+				The Christmas we<br />
+				<span class="underlined">actually need</span>
 			</h1>
 
-			<p class="tagline">Three services. One story. Everyone welcome.</p>
+			<p class="tagline">
+				This time of year &mdash; everyone is telling you what you need. Let's take an hour together
+				to press into the Christmas we actually need.
+			</p>
 
 			<p class="lede">
-				Carols and worship, a short message, and about an hour together before the rest of the night
-				begins.
+				Celebrate Christmas Eve with familiar carols, candlelight and the hope that Jesus brings.
+				Come with your family, friends, co-workers and classmates, or simply come on your own
+				&mdash; we would love to celebrate with you!
 			</p>
 
 			<dl class="facts">
@@ -52,7 +55,11 @@
 				</div>
 				<div>
 					<dt>When</dt>
-					<dd>{EVENT_DATE.long}<br /><span>3:30 pm &middot; 5:00 pm &middot; 11:00 pm</span></dd>
+					<dd>
+						{EVENT_DATE.long}<br /><span>
+							3:30 &ndash; 4:30 &middot; 5:00 &ndash; 6:00 &middot; 11:00 &ndash; Midnight
+						</span>
+					</dd>
 				</div>
 			</dl>
 
@@ -62,29 +69,16 @@
 			</div>
 		</div>
 
-		<div class="art" aria-hidden="true">
+		<div class="art">
 			<div class="night">
-				<svg class="stars" viewBox="0 0 400 520" preserveAspectRatio="xMidYMid slice">
-					<defs>
-						<radialGradient id="glow" cx="50%" cy="40%" r="50%">
-							<stop offset="0%" stop-color="var(--gold-glow)" stop-opacity="0.5" />
-							<stop offset="55%" stop-color="var(--gold)" stop-opacity="0.12" />
-							<stop offset="100%" stop-color="var(--gold)" stop-opacity="0" />
-						</radialGradient>
-					</defs>
-					<rect width="400" height="520" fill="url(#glow)" />
-					{#each [[38, 54, 1.5], [96, 28, 1], [150, 70, 1.2], [214, 40, 1], [286, 76, 1.6], [344, 36, 1.1], [62, 128, 1], [122, 162, 1.3], [258, 142, 1], [330, 120, 1.4], [24, 206, 1.2], [372, 196, 1], [88, 250, 1], [318, 268, 1.2], [46, 330, 1.1], [360, 352, 1.3], [140, 404, 1], [268, 430, 1.2], [70, 452, 1], [206, 476, 1.1]] as [cx, cy, r] (cx + '-' + cy)}
-						<circle {cx} {cy} {r} fill="var(--gold-glow)" opacity="0.75" />
-					{/each}
-					<g transform="translate(200 212) scale(1.75)">
-						<path
-							d="M0-34C7-20 11-12 11-5a11 11 0 0 1-22 0c0-7 4-15 11-29Z"
-							fill="var(--gold)"
-							opacity="0.95"
-						/>
-						<path d="M0-18c4 7 6 11 6 15a6 6 0 0 1-12 0c0-4 2-8 6-15Z" fill="var(--gold-glow)" />
-					</g>
-				</svg>
+				<enhanced:img
+					class="photo"
+					src="../assets/hero-candle-child.jpg"
+					alt="A child holding a lit candle, face glowing in the warm light"
+					sizes="(min-width: 60rem) 40vw, 100vw"
+					fetchpriority="high"
+				/>
+				<div class="shade" aria-hidden="true"></div>
 
 				<div class="times">
 					{#each SERVICES as service (service.id)}
@@ -92,7 +86,7 @@
 							class={['time-chip', { 'is-invited': invited?.id === service.id }]}
 							href="#service-{service.id}"
 						>
-							<span class="t">{service.time}</span>
+							<span class="t">{service.timeRange}</span>
 							<span class="n">{service.name}</span>
 						</a>
 					{/each}
@@ -232,17 +226,42 @@
 		background: linear-gradient(170deg, var(--pine) 0%, var(--pine-deep) 100%);
 		box-shadow: var(--shadow-lg);
 		overflow: hidden;
-		min-height: clamp(20rem, 44vw, 30rem);
+		/* Tall enough that the candle sits clearly above the time chips — mobile and desktop. */
+		aspect-ratio: 3 / 4;
+		min-height: clamp(32rem, 92vw, 40rem);
+		width: 100%;
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-end;
 	}
 
-	.stars {
+	.night :global(picture.photo),
+	.night :global(img.photo) {
 		position: absolute;
 		inset: 0;
 		width: 100%;
 		height: 100%;
+	}
+
+	.night :global(.photo img),
+	.night :global(img.photo) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		/* Keep face + flame in the open space above the chips */
+		object-position: 50% 12%;
+	}
+
+	/* Darkens only the lower band so chips stay readable; candle area stays clear. */
+	.shade {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			180deg,
+			transparent 42%,
+			color-mix(in srgb, var(--pine-deep) 45%, transparent) 68%,
+			color-mix(in srgb, var(--pine-deep) 92%, transparent) 100%
+		);
 	}
 
 	.times {
@@ -256,11 +275,14 @@
 	.time-chip {
 		display: flex;
 		align-items: baseline;
-		gap: 0.7rem;
+		flex-wrap: wrap;
+		column-gap: 0.8rem;
+		row-gap: 0.1rem;
 		padding: 0.7rem 1rem;
 		border-radius: var(--radius);
 		border: 1px solid var(--line-dark);
-		background: #ffffff0f;
+		background: color-mix(in srgb, var(--pine-deep) 55%, transparent);
+		backdrop-filter: blur(6px);
 		color: var(--cream);
 		text-decoration: none;
 		transition:
@@ -269,22 +291,21 @@
 	}
 
 	.time-chip:hover {
-		background: #ffffff1f;
+		background: color-mix(in srgb, var(--pine-deep) 40%, transparent);
 		border-color: #ffffff5c;
 	}
 
 	.time-chip.is-invited {
-		background: color-mix(in srgb, var(--gold) 22%, transparent);
+		background: color-mix(in srgb, var(--gold) 30%, var(--pine-deep));
 		border-color: var(--gold);
 	}
 
 	.time-chip .t {
 		font-family: var(--font-display);
-		font-size: 1.3rem;
+		font-size: 1.2rem;
 		font-weight: 600;
 		letter-spacing: -0.02em;
 		color: var(--gold-glow);
-		min-width: 4.4rem;
 	}
 
 	.time-chip .n {

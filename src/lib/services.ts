@@ -1,8 +1,6 @@
 // NOTE: details confirmed against westwoodscc.org — address, casual dress, north/south
 // entrances with greeters, worship + Bible teaching, "belong before you believe".
-// STILL TO CONFIRM with the church: that 3:30 and 5:00 are identical services, the
-// ~1 hour runtime on Christmas Eve (Sundays run 60-75 min), and whether kids' classes
-// run on Christmas Eve or kids stay in the service.
+// Service copy revised from pastor notes Nov 2026.
 export const SITE_URL = 'https://lakewoodchristmas.org';
 
 export const CHURCH = {
@@ -27,17 +25,21 @@ export const EVENT_DATE = {
 } as const;
 
 export type ServiceId = '330' | '500' | '1100';
+export type ServiceCategory = 'casual' | 'acoustic';
 
 export interface Service {
 	id: ServiceId;
 	time: string;
 	timeShort: string;
+	endTime: string;
+	timeRange: string;
 	iso: string;
 	name: string;
 	tag: string;
 	blurb: string;
 	bestFor: string;
 	tone: 'day' | 'evening' | 'night';
+	category: ServiceCategory;
 }
 
 export const SERVICES: Service[] = [
@@ -45,37 +47,65 @@ export const SERVICES: Service[] = [
 		id: '330',
 		time: '3:30 pm',
 		timeShort: '3:30',
+		endTime: '4:30 pm',
+		timeRange: '3:30 – 4:30 pm',
 		iso: '2026-12-24T15:30:00-07:00',
-		name: 'Daylight Service',
-		tag: 'While it is still light out',
+		name: 'Casual Relational',
+		tag: 'Identical to the 5:00',
 		blurb:
-			'Carols and worship, with a short message. The same service as 5:00, while there is still daylight outside — a good fit if you have somewhere to be later, or would rather not be out late.',
-		bestFor: 'An early start, with the evening still ahead of you',
-		tone: 'day'
+			'One hour — Christmas music, kids singing, a short moment just for the kids, candlelight, and a message of hope that Christmas brings. The same service as 5:00.',
+		bestFor: 'Families, friends, and a warm, relational hour',
+		tone: 'day',
+		category: 'casual'
 	},
 	{
 		id: '500',
 		time: '5:00 pm',
 		timeShort: '5:00',
+		endTime: '6:00 pm',
+		timeRange: '5:00 – 6:00 pm',
 		iso: '2026-12-24T17:00:00-07:00',
-		name: 'Twilight Service',
-		tag: 'Just after sunset',
+		name: 'Casual Relational',
+		tag: 'Identical to the 3:30',
 		blurb:
-			'The same service as 3:30, once the light has gone. Carols and worship, with a short message, and still time for whatever the rest of your night holds.',
-		bestFor: 'The middle of the evening, with the night still ahead',
-		tone: 'evening'
+			'One hour — Christmas music, kids singing, a short moment just for the kids, candlelight, and a message of hope that Christmas brings. The same service as 3:30.',
+		bestFor: 'Families, friends, and a warm, relational hour',
+		tone: 'evening',
+		category: 'casual'
 	},
 	{
 		id: '1100',
 		time: '11:00 pm',
 		timeShort: '11:00',
+		endTime: 'Midnight',
+		timeRange: '11:00 pm – Midnight',
 		iso: '2026-12-24T23:00:00-07:00',
-		name: 'Candlelight Service',
-		tag: 'Quiet, by candlelight',
+		name: 'Acoustic Christmas Eve',
+		tag: 'Into Christmas Day',
 		blurb:
-			'Slower and more reflective. The lights go down, candlelight passes hand to hand across the room, and we sing the night out together as Christmas Day arrives.',
-		bestFor: 'A still, late night — better for older kids and adults',
-		tone: 'night'
+			'One hour — Christmas music, a message, communion, and a welcome to Christmas Day at Midnight.',
+		bestFor: 'A quieter late hour — music, message, and communion',
+		tone: 'night',
+		category: 'acoustic'
+	}
+];
+
+export const SERVICE_CATEGORIES = [
+	{
+		id: 'casual' as const,
+		title: 'Casual Relational Services',
+		timesLabel: '3:30 – 4:30 · 5:00 – 6:00',
+		blurb:
+			'Identical services — one hour of Christmas music, kids singing, a short moment just for the kids, candlelight, and a message of hope that Christmas brings.',
+		services: SERVICES.filter((s) => s.category === 'casual')
+	},
+	{
+		id: 'acoustic' as const,
+		title: 'Acoustic Christmas Eve',
+		timesLabel: '11:00 pm – Midnight',
+		blurb:
+			'One hour of Christmas music, a message, communion, and a welcome to Christmas Day at Midnight.',
+		services: SERVICES.filter((s) => s.category === 'acoustic')
 	}
 ];
 
@@ -115,9 +145,9 @@ export function inviteMessages(service: Service | null, source: string): Message
 
 	const sms = service
 		? service.id === '1100'
-			? `Hey! Any plans Christmas Eve? Westwoods does an 11:00 pm candlelight service — carols and worship, and the whole room singing by candlelight right before midnight. About an hour, free, super casual. Want to come with me? ${link}`
-			: `Hey! Any plans Christmas Eve? Westwoods is doing a Christmas Eve service at ${service.time} — carols and worship, about an hour. It's free and super casual. Want to come with me? ${link}`
-		: `Hey! Any plans Christmas Eve? Westwoods has three Christmas Eve services — ${timesList}. Carols and worship, about an hour. Free and super casual. Want to come with me? ${link}`;
+			? `Hey! Any plans Christmas Eve? Westwoods does Acoustic Christmas Eve at 11:00 — Christmas music, a message, communion, and we welcome Christmas Day at Midnight. About an hour, free, super casual. Want to come with me? ${link}`
+			: `Hey! Any plans Christmas Eve? Westwoods is doing a casual Christmas Eve service at ${service.time} — Christmas music, kids singing, candlelight, and a short message of hope. About an hour. Free and super casual. Want to come with me? ${link}`
+		: `Hey! Any plans Christmas Eve? Westwoods has three Christmas Eve services — ${timesList}. About an hour each. Free and super casual. Want to come with me? ${link}`;
 
 	const emailSubject = service
 		? `Come with me to Christmas Eve — ${service.time}`
@@ -128,7 +158,7 @@ export function inviteMessages(service: Service | null, source: string): Message
 
 I wanted to invite you to something on Christmas Eve.
 
-Westwoods Community Church is holding its ${service.name.toLowerCase()} on ${EVENT_DATE.long} at ${service.time}, at ${CHURCH.address}.
+Westwoods Community Church is holding ${service.name} on ${EVENT_DATE.long} at ${service.timeRange}, at ${CHURCH.address}.
 
 ${service.blurb}
 
@@ -142,7 +172,7 @@ I wanted to invite you to something on Christmas Eve.
 
 Westwoods Community Church is holding three Christmas Eve services on ${EVENT_DATE.long} at ${CHURCH.address}:
 
-${SERVICES.map((s) => `  • ${s.time} — ${s.name}: ${s.bestFor}`).join('\n')}
+${SERVICES.map((s) => `  • ${s.timeRange} — ${s.name}: ${s.bestFor}`).join('\n')}
 
 They're free, about an hour each, you can wear whatever you want, and there is no pressure of any kind. Whether church is part of your life or not, you are genuinely invited — pick whichever time works and I would love for you to come with me.
 
@@ -150,19 +180,19 @@ All the details are here: ${link}
 `;
 
 	const social = service
-		? `Christmas Eve at Westwoods Community Church — ${service.name}, ${EVENT_DATE.long} at ${service.time} in Lakewood. Everyone's welcome.`
+		? `Christmas Eve at Westwoods Community Church — ${service.name}, ${EVENT_DATE.long} at ${service.timeRange} in Lakewood. Everyone's welcome.`
 		: `Christmas Eve at Westwoods Community Church — three services ${EVENT_DATE.long} in Lakewood: ${timesList}. Everyone's welcome.`;
 
 	const preview: [string, string] = service
 		? [
-				`Hey — doing anything Christmas Eve? Westwoods has a service at ${service.time}.`,
+				`Hey — doing anything Christmas Eve? Westwoods has ${service.name} at ${service.time}.`,
 				service.id === '1100'
-					? `They do the whole candlelight thing right before midnight. About an hour. Want to come with me?`
-					: `Carols and worship, about an hour. Free and really casual. Want to come with me?`
+					? `Christmas music, a message, communion — and we welcome Christmas Day at Midnight. About an hour. Want to come with me?`
+					: `Christmas music, kids singing, candlelight, and a short message of hope. About an hour. Free and really casual. Want to come with me?`
 			]
 		: [
 				`Hey — doing anything Christmas Eve? Westwoods has services at ${timesList}.`,
-				`Carols and worship, about an hour. Free and really casual. Pick a time and come with me?`
+				`About an hour each. Free and really casual. Pick a time and come with me?`
 			];
 
 	// Copying gives you the whole invitation, not a bare URL — so it can be pasted

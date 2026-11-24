@@ -42,28 +42,7 @@ const fraunces = fontFile(
 );
 const inter = fontFile('@fontsource-variable+inter@5.3.0', 'inter-latin-wght-normal.woff2');
 
-const stars = [
-	[70, 86, 2],
-	[168, 44, 1.4],
-	[262, 120, 1.8],
-	[372, 62, 1.4],
-	[486, 128, 2.2],
-	[574, 52, 1.6],
-	[96, 206, 1.5],
-	[214, 268, 1.9],
-	[438, 232, 1.4],
-	[540, 196, 2],
-	[42, 330, 1.7],
-	[596, 318, 1.5],
-	[150, 402, 1.5],
-	[330, 448, 1.8],
-	[500, 420, 1.6],
-	[108, 500, 1.5],
-	[268, 548, 1.7],
-	[432, 560, 1.4],
-	[588, 470, 1.8],
-	[20, 180, 1.4]
-];
+const heroPhoto = readFileSync(join(root, 'src/lib/assets/hero-candle-child.jpg')).toString('base64');
 
 function html({ headline, times, highlight }) {
 	return `<!doctype html>
@@ -75,6 +54,11 @@ function html({ headline, times, highlight }) {
 body{width:${WIDTH}px;height:${HEIGHT}px;overflow:hidden;display:flex;
  font-family:'Inter',sans-serif;background:#0b2019;color:#fcf8f2}
 .art{position:absolute;inset:0}
+.photo{position:absolute;top:0;right:0;width:700px;height:${HEIGHT}px;
+ background:url(data:image/jpeg;base64,${heroPhoto}) 50% 20%/cover no-repeat;
+ -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 55%);
+ mask-image:linear-gradient(90deg,transparent 0%,#000 55%)}
+.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,32,25,.15) 0%,rgba(11,32,25,.85) 100%)}
 .wrap{position:relative;display:flex;width:100%;height:100%;
  padding:64px 72px;flex-direction:column;justify-content:space-between}
 .eyebrow{font-size:21px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#e0a533}
@@ -84,7 +68,7 @@ h1{font-family:'Fraunces',Georgia,serif;font-weight:600;letter-spacing:-.03em;
 .chip{display:flex;flex-direction:column;gap:2px;padding:14px 26px;border-radius:16px;
  border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
 .chip.on{border-color:#e0a533;background:rgba(224,165,51,.22)}
-.chip b{font-family:'Fraunces',Georgia,serif;font-size:34px;font-weight:600;
+.chip b{font-family:'Fraunces',Georgia,serif;font-size:28px;font-weight:600;
  letter-spacing:-.02em;color:#fbe3ac}
 .chip span{font-size:17px;color:rgba(255,255,255,.8)}
 .foot{display:flex;align-items:baseline;gap:14px;font-size:22px;color:rgba(255,255,255,.82)}
@@ -103,23 +87,14 @@ h1{font-family:'Fraunces',Georgia,serif;font-weight:600;letter-spacing:-.03em;
  </linearGradient></defs>
  <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#bg)"/>
  <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#g)"/>
- ${stars.map(([x, y, r]) => `<circle cx="${x + 560}" cy="${y}" r="${r}" fill="#fbe3ac" opacity=".72"/>`).join('')}
- <g transform="translate(936 196)">
-  <g transform="scale(2.3)">
-   <path d="M0-38C8-21 12-11 12-4a12 12 0 0 1-24 0c0-7 4-17 12-34Z" fill="#e0a533"/>
-   <path d="M0-20c4.6 8.4 6.6 12.4 6.6 16.4a6.6 6.6 0 0 1-13.2 0c0-4 2-8 6.6-16.4Z" fill="#fbe3ac"/>
-  </g>
-  <rect x="-2.5" y="22" width="5" height="18" rx="2.5" fill="#6b5a3a"/>
-  <rect x="-34" y="38" width="68" height="186" rx="10" fill="#f4ebdd" opacity=".95"/>
-  <ellipse cx="0" cy="38" rx="34" ry="10" fill="#ece0cd"/>
-  <rect x="-34" y="38" width="22" height="186" rx="10" fill="#ffffff" opacity=".35"/>
- </g>
 </svg>
+<div class="photo"></div>
+<div class="shade"></div>
 <div class="wrap">
  <p class="eyebrow">${EVENT_DATE.weekday} &middot; ${EVENT_DATE.long}, 2026</p>
  <h1>${headline}</h1>
  <div class="times">
-  ${times.map((t) => `<div class="chip${t.id === highlight ? ' on' : ''}"><b>${t.time}</b><span>${t.name}</span></div>`).join('')}
+  ${times.map((t) => `<div class="chip${t.id === highlight ? ' on' : ''}"><b>${t.timeRange}</b><span>${t.name}</span></div>`).join('')}
  </div>
  <p class="foot"><b>${CHURCH.name}</b><span class="dot">&#9679;</span><span>${CHURCH.street}, ${CHURCH.city}</span></p>
 </div>
@@ -129,13 +104,13 @@ h1{font-family:'Fraunces',Georgia,serif;font-weight:600;letter-spacing:-.03em;
 const variants = [
 	{
 		out: 'og-image.png',
-		headline: 'Christmas Eve is better together',
+		headline: 'The Christmas we actually need',
 		times: SERVICES,
 		highlight: null
 	},
 	...SERVICES.map((s) => ({
 		out: `og-image-${s.id}.png`,
-		headline: s.id === '1100' ? 'Come for the candlelight' : 'Christmas Eve is better together',
+		headline: s.id === '1100' ? 'Acoustic Christmas Eve' : 'The Christmas we actually need',
 		times: SERVICES,
 		highlight: s.id
 	}))

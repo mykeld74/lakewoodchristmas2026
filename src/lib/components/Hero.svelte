@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { CHURCH, EVENT_DATE, SERVICES, type Service } from '#lib/services.js';
+	import heroCandle from '#lib/assets/hero-candle-child.jpg?enhanced';
 
 	let { invited = null }: { invited?: Service | null } = $props();
 </script>
@@ -73,7 +74,7 @@
 			<div class="night">
 				<enhanced:img
 					class="photo"
-					src="../assets/hero-candle-child.jpg"
+					src={heroCandle}
 					alt="A child holding a lit candle, face glowing in the warm light"
 					sizes="(min-width: 60rem) 40vw, 100vw"
 					fetchpriority="high"
@@ -235,15 +236,16 @@
 		justify-content: flex-end;
 	}
 
-	.night :global(picture.photo),
-	.night :global(img.photo) {
+	/* enhanced:img wraps in <picture>; class lands on the <img>. */
+	.night :global(picture) {
 		position: absolute;
 		inset: 0;
 		width: 100%;
 		height: 100%;
+		display: block;
 	}
 
-	.night :global(.photo img),
+	.night :global(picture img),
 	.night :global(img.photo) {
 		width: 100%;
 		height: 100%;

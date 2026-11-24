@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { SERVICE_CATEGORIES, EVENT_DATE, calendarUrl, type Service } from '#lib/services.js';
+	import serviceCasual from '#lib/assets/service-casual.jpg?enhanced';
+	import serviceAcoustic from '#lib/assets/service-acoustic.jpg?enhanced';
 
 	let { invited = null }: { invited?: Service | null } = $props();
 </script>
@@ -33,14 +35,14 @@
 						{#if category.id === 'casual'}
 							<enhanced:img
 								class="graphic"
-								src="../assets/service-casual.jpg"
+								src={serviceCasual}
 								alt="Advent series graphic: The Christmas We Actually Need, on cream with holly"
 								sizes="(min-width: 52rem) 45vw, 100vw"
 							/>
 						{:else}
 							<enhanced:img
 								class="graphic"
-								src="../assets/service-acoustic.jpg"
+								src={serviceAcoustic}
 								alt="Christmas Eve by Candlelight: an acoustic Christmas Eve service"
 								sizes="(min-width: 52rem) 45vw, 100vw"
 							/>
